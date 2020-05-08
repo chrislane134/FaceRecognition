@@ -42,7 +42,8 @@ class App extends Component { //to change state
       input: '', //called what ever but blank.
       imageUrl: '',
       box: {}, //because its an object blank object. 
-      route: 'signin'
+      route: 'signin',
+      isSignedIn: false
     }
   }
 
@@ -60,7 +61,7 @@ class App extends Component { //to change state
   }
 
   displayFaceBox = (box) => {
-    console.log(box);
+    
     this.setState({box: box});
   }
 
@@ -79,25 +80,31 @@ class App extends Component { //to change state
   }
 
   onRouteChange = (route) => {
+    if (route === 'signout') {
+      this.setState({isSignedIn:false})
+    }else if (route === 'home'){
+      this.setState({isSignedIn:true})
+    }
     this.setState({route: route});
   }
   
 
   render() {
+   const {isSignedIn, imageUrl, route, box} = this.state;
   return (
     <div className="App">
         <Particles className='particles'
         params={particlesOptions} />
       
-        <Navigation  onRouteChange={this.onRouteChange} />
-        { this.state.route === 'home' //so if route:signin state === signin then the sigin page will be displayed if anything in the route:home page displayed.
+        <Navigation isSignedIn={isSignedIn} onRouteChange={this.onRouteChange} />
+        { route === 'home' //so if route:signin state === signin then the sigin page will be displayed if anything in the route:home page displayed.
         ? <div> 
             <Logo />
             <Rank />
             <ImageLinkForm onInputChange={this.onInputChange} onButtonSubmit={this.onButtonSubmit} /> {/*passes onInputchange as a prop*/}
         
         
-          <FaceRecognition box={this.state.box} imageUrl={this.state.imageUrl }/> {/*can now use imagurl in the facerecognition.js file*/}
+          <FaceRecognition box={box} imageUrl={imageUrl }/> {/*can now use imagurl in the facerecognition.js file*/}
         </div>
         : (
           this.state.route === 'signin' ?
